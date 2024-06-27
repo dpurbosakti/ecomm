@@ -29,7 +29,7 @@ CREATE TABLE `order_items` (
     `name` varchar(255) NOT NULL,
     `quantity` int NOT NULL,
     `image` varchar(255) NOT NULL,
-    `price` int NOT NULL
+    `price` decimal(10,2) NOT NULL
 );
 
 ALTER TABLE `order_items` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
