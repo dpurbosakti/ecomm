@@ -41,3 +41,31 @@ func (ms *MySQLStorer) GetProduct(ctx context.Context, id int64) (*Product, erro
 
 	return &p, nil
 }
+
+func (ms *MySQLStorer) ListProducts(ctx context.Context) ([]*Product, error) {
+	var products []*Product
+	err := ms.db.SelectContext(ctx, &products, "SELECT * FROM products")
+	if err != nil {
+		return nil, fmt.Errorf("error listing products: %w", err)
+	}
+
+	return products, nil
+}
+
+func (ms *MySQLStorer) UpdateProduct(ctx context.Context, p *Product) (*Product, error) {
+	_, err := ms.db.NamedExecContext(ctx, "UPDATE products SET name=:name, image=:image, category=:category, description=:description, rating=:rating, num_reviews=:num_reviews, price=:price, count_in_stock=:count_in_stock WHERE id=:id", p)
+	if err != nil {
+		return nil, fmt.Errorf("error updating product: %w", err)
+	}
+
+	return p, nil
+}
+
+func (ms *MySQLStorer) DeleteProduct(ctx context.Context, id int64) error {
+	_, err := ms.db.ExecContext(ctx, "DELETE FROM products WHERE id=?", id)
+	if err != nil {
+		return fmt.Errorf("error deleting product: %w", err)
+	}
+
+	return nil
+}
